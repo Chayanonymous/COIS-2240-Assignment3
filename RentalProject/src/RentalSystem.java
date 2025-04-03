@@ -4,7 +4,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-
+import java.io.FileReader;
+import java.io.BufferedReader;
 
 public class RentalSystem {
     private List<Vehicle> vehicles = new ArrayList<>();
@@ -19,6 +20,7 @@ public class RentalSystem {
     }
     
     private RentalSystem() {
+    	loadData();
     	
     }
     
@@ -149,5 +151,11 @@ public class RentalSystem {
     		System.out.println("Error");
     	}
 
+    }
+    
+    private void loadData() {
+    	loadVehicle();
+    	loadCustomer();
+    	loadRecords();
     }
 }
