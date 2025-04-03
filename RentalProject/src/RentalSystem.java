@@ -175,12 +175,12 @@ public class RentalSystem {
                 
                 if (type.equals("Car")) {
                     int doors = Integer.parseInt(parts[6].trim());
-                    Car car = new Car(licensePlate, make, model, year, doors);
+                    Car car = new Car(licensePlate, make, model, year);
                     car.setStatus(status);
                     vehicles.add(car);
                 } else if (type.equals("Motorcycle")) {
                     String category = parts[6].trim();
-                    Motorcycle motorcycle = new Motorcycle(licensePlate, make, model, year, category);
+                    Motorcycle motorcycle = new Motorcycle(licensePlate, make, model, year);
                     motorcycle.setStatus(status);
                     vehicles.add(motorcycle);
                 }
@@ -189,7 +189,7 @@ public class RentalSystem {
             System.out.println("Error");
     }
 }
-    private void loadCustomers() {
+    private void loadCustomer() {
         try (BufferedReader reader = new BufferedReader(new FileReader("customers.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -200,7 +200,7 @@ public class RentalSystem {
                 String customerName = parts[1].trim();
                 String phoneNumber = parts[2].trim();
                 
-                Customer customer = new Customer(id, name, contact);
+                Customer customer = new Customer(customerId, customerName, phoneNumber);
                 customers.add(customer);
             }
         } catch (IOException e) {
@@ -210,7 +210,7 @@ public class RentalSystem {
         }
     }
 
-    private void loadRentalRecords() {
+    private void loadRecords() {
         try (BufferedReader reader = new BufferedReader(new FileReader("rental_records.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
