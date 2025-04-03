@@ -6,9 +6,25 @@ public class RentalSystem {
     private List<Vehicle> vehicles = new ArrayList<>();
     private List<Customer> customers = new ArrayList<>();
     private RentalHistory rentalHistory = new RentalHistory();
+    public static RentalSystem instance;
 
     public void addVehicle(Vehicle vehicle) {
         vehicles.add(vehicle);
+    }
+    
+    private RentalSystem() {
+    	
+    }
+    
+    public static RentalSystem getInstance(){
+    	if (instance == null) {
+    		synchronized (RentalSystem.class) {
+                if (instance == null) {
+                    instance = new RentalSystem();
+                }
+            }
+    	}
+    	return instance;
     }
 
     public void addCustomer(Customer customer) {
