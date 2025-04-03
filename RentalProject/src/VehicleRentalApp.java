@@ -132,7 +132,7 @@ public class VehicleRentalApp {
                     rentalSystem.displayRentalHistory();
                     break;
                     
-                case 0:
+                case 7:
                 	scanner.close();
                     System.exit(0);
             }
