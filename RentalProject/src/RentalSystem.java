@@ -13,6 +13,7 @@ public class RentalSystem {
     private RentalHistory rentalHistory = new RentalHistory();
     public static RentalSystem instance;
     
+    
     public void addVehicle(Vehicle vehicle) {
         vehicles.add(vehicle);
         saveVehicle(vehicle);
