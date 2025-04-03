@@ -158,4 +158,16 @@ public class RentalSystem {
     	loadCustomer();
     	loadRecords();
     }
+    
+    private void loadRecords() {
+    	try(BufferedReader reader = new BufferedReader(new FileReader("rental_records.txt"))){
+    		String row;
+    		while((row = reader.readLine()) != null) {
+    			RentalRecord record = RentalRecord.parse(row);
+                rentalHistory.addRecord(record);
+    		}
+    	} catch(IOException e){
+    		System.out.println("Error");
+    	}
+    }
 }
