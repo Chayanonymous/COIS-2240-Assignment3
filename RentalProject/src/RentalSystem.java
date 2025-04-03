@@ -1,15 +1,20 @@
 import java.util.List;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class RentalSystem {
     private List<Vehicle> vehicles = new ArrayList<>();
     private List<Customer> customers = new ArrayList<>();
     private RentalHistory rentalHistory = new RentalHistory();
     public static RentalSystem instance;
-
+    
     public void addVehicle(Vehicle vehicle) {
         vehicles.add(vehicle);
+        saveVehicle(vehicle);
+        
     }
     
     private RentalSystem() {
@@ -104,5 +109,13 @@ public class RentalSystem {
             if (c.getCustomerName().equalsIgnoreCase(name))
                 return c;
         return null;
+    }
+    
+    public void saveVehicle(Vehicle vehicle) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("vehicles.txt", true))) {
+            writer.write(vehicle.getInfo() + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
