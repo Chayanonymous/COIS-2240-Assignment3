@@ -187,7 +187,61 @@ public class RentalSystem {
             }
         } catch (IOException e) {
             System.out.println("Error");
-        }catch (Exception e) {
-            System.out.println("Error");
     }
 }
+    private void loadCustomers() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("customers.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length < 3) continue; // Skip invalid lines
+                
+                int customerId = Integer.parseInt(parts[0].trim());
+                String customerName = parts[1].trim();
+                String phoneNumber = parts[2].trim();
+                
+                Customer customer = new Customer(customerId, customerName, phoneNumber);
+                customers.add(customer);
+            }
+        } catch (IOException e) {
+            System.out.println("No existing customer data found or error reading file.");
+        } catch (Exception e) {
+            System.out.println("Error parsing customer data: " + e.getMessage());
+        }
+    }
+
+    private void loadRentalRecords() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("rental_records.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length < 6) continue; // Skip invalid lines
+                
+                // Parse vehicle
+                String vehicleType = parts[0].trim();
+                String licensePlate = parts[1].trim();
+                Vehicle vehicle = findVehicleByPlate(licensePlate);
+                if (vehicle == null) continue;
+                
+                // Parse customer
+                int customerId = Integer.parseInt(parts[2].trim());
+                Customer customer = findCustomerById(customerId);
+                if (customer == null) continue;
+                
+                // Parse date
+                LocalDate date = LocalDate.parse(parts[3].trim());
+                
+                // Parse amount and type
+                double amount = Double.parseDouble(parts[4].trim());
+                String transactionType = parts[5].trim();
+                
+                RentalRecord record = new RentalRecord(vehicle, customer, date, amount, transactionType);
+                rentalHistory.addRecord(record);
+            }
+        } catch (IOException e) {
+            System.out.println("No existing rental records found or error reading file.");
+        } catch (Exception e) {
+            System.out.println("Error parsing rental records: " + e.getMessage());
+        }
+    }
+    }
