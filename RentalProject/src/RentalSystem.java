@@ -13,6 +13,7 @@ public class RentalSystem {
     private RentalHistory rentalHistory = new RentalHistory();
     public static RentalSystem instance;
     
+    
     public void addVehicle(Vehicle vehicle) {
         vehicles.add(vehicle);
         saveVehicle(vehicle);
@@ -154,8 +155,20 @@ public class RentalSystem {
     }
     
     private void loadData() {
-    	loadVehicle();
-    	loadCustomer();
+        loadVehicle();
+        loadCustomer();
     	loadRecords();
     }
 }
+
+private void loadCustomer() {
+	try (BufferedReader reader = new 
+	BufferedReader(new FileReader("customers.txt"))){
+	String line;
+	while ((line = reader.readLine())!= null){
+    Customer.add(customer);
+	}
+	} catch(IOException e) {
+		System.out.println("Error");
+	}
+	}
