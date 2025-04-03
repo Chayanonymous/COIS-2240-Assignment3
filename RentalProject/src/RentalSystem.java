@@ -160,15 +160,3 @@ public class RentalSystem {
     	loadRecords();
     }
 }
-
-private void loadCustomer() {
-	try (BufferedReader reader = new 
-	BufferedReader(new FileReader("customers.txt"))){
-	String line;
-	while ((line = reader.readLine())!= null){
-    Customer.add(customer);
-	}
-	} catch(IOException e) {
-		System.out.println("Error");
-	}
-	}

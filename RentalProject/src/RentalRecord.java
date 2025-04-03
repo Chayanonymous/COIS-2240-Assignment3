@@ -30,4 +30,14 @@ public class RentalRecord {
                " | Date: " + recordDate + 
                " | Amount: $" + totalAmount;
     }
+    
+    public static RentalRecord parse(String row) {
+    	String[] parts = row.split(",");
+        Vehicle vehicleId = parts[0];
+        Customer customerId = parts[1];
+        LocalDate date = LocalDate.parse(parts[2]);
+        double amount = Double.parseDouble(parts[3]);
+        String type = parts[4];
+        return new RentalRecord(vehicleId, customerId, date, amount, type);
+    }
 }
