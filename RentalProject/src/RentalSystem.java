@@ -164,7 +164,7 @@ public class RentalSystem {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length < 6) continue; // Skip invalid lines
+                if (parts.length < 6) continue; 
                 
                 String type = parts[0].trim();
                 String licensePlate = parts[1].trim();
@@ -194,13 +194,13 @@ public class RentalSystem {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length < 3) continue; // Skip invalid lines
+                if (parts.length < 3) continue; 
                 
                 int customerId = Integer.parseInt(parts[0].trim());
                 String customerName = parts[1].trim();
                 String phoneNumber = parts[2].trim();
                 
-                Customer customer = new Customer(customerId, customerName, phoneNumber);
+                Customer customer = new Customer(id, name, contact);
                 customers.add(customer);
             }
         } catch (IOException e) {
@@ -215,23 +215,23 @@ public class RentalSystem {
             String line;
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split(",");
-                if (parts.length < 6) continue; // Skip invalid lines
+                if (parts.length < 6) continue; 
                 
-                // Parse vehicle
+               
                 String vehicleType = parts[0].trim();
                 String licensePlate = parts[1].trim();
                 Vehicle vehicle = findVehicleByPlate(licensePlate);
                 if (vehicle == null) continue;
                 
-                // Parse customer
+                
                 int customerId = Integer.parseInt(parts[2].trim());
                 Customer customer = findCustomerById(customerId);
                 if (customer == null) continue;
                 
-                // Parse date
+                
                 LocalDate date = LocalDate.parse(parts[3].trim());
                 
-                // Parse amount and type
+                
                 double amount = Double.parseDouble(parts[4].trim());
                 String transactionType = parts[5].trim();
                 
