@@ -154,8 +154,39 @@ public class RentalSystem {
     }
     
     private void loadData() {
-    	loadVehicle();
+    	loadVehicles();
     	loadCustomer();
     	loadRecords();
+    }
+    private void loadVehicles() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("vehicles.txt"))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length < 6) continue; // Skip invalid lines
+                
+                String type = parts[0].trim();
+                String licensePlate = parts[1].trim();
+                String make = parts[2].trim();
+                String model = parts[3].trim();
+                int year = Integer.parseInt(parts[4].trim());
+                Vehicle.VehicleStatus status = Vehicle.VehicleStatus.valueOf(parts[5].trim());
+                
+                if (type.equals("Car")) {
+                    int doors = Integer.parseInt(parts[6].trim());
+                    Car car = new Car(licensePlate, make, model, year, doors);
+                    car.setStatus(status);
+                    vehicles.add(car);
+                } else if (type.equals("Motorcycle")) {
+                    String category = parts[6].trim();
+                    Motorcycle motorcycle = new Motorcycle(licensePlate, make, model, year, category);
+                    motorcycle.setStatus(status);
+                    vehicles.add(motorcycle);
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("Error");
+        }catch (Exception e) {
+            System.out.println("Error");
     }
 }
