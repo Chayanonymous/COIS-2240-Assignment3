@@ -1,4 +1,7 @@
 import java.util.List;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -29,8 +32,11 @@ public class RentalSystem {
 
     public void addCustomer(Customer customer) {
         customers.add(customer);
+        saveCustomer(customer);
+        
     }
 
+ 
     public void rentVehicle(Vehicle vehicle, Customer customer, LocalDate date, double amount) {
         if (vehicle.getStatus() == Vehicle.VehicleStatus.AVAILABLE) {
             vehicle.setStatus(Vehicle.VehicleStatus.RENTED);
@@ -104,5 +110,13 @@ public class RentalSystem {
             if (c.getCustomerName().equalsIgnoreCase(name))
                 return c;
         return null;
+    }
+    
+    public void saveCustomer(Customer customer) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("customers.txt", true))) {
+            writer.write(customer.toString() + "\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
