@@ -234,7 +234,7 @@ public class RentalSystem {
     	try (BufferedReader reader = new BufferedReader(new FileReader("customers.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
-            	// for skipping empty rows/lines
+
             	if (line.trim().isEmpty()) {
             		continue;
             	}
