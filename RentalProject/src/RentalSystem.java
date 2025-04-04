@@ -73,11 +73,18 @@ public class RentalSystem {
 
     public void displayAvailableVehicles() {
     	System.out.println("|     Type         |\tPlate\t|\tMake\t|\tModel\t|\tYear\t|");
-    	System.out.println("---------------------------------------------------------------------------------");
-    	 
+        System.out.println("---------------------------------------------------------------------------------");
+        
         for (Vehicle v : vehicles) {
             if (v.getStatus() == Vehicle.VehicleStatus.AVAILABLE) {
-                System.out.println("|     " + (v instanceof Car ? "Car          " : "Motorcycle   ") + "|\t" + v.getLicensePlate() + "\t|\t" + v.getMake() + "\t|\t" + v.getModel() + "\t|\t" + v.getYear() + "\t|\t");
+                String type;
+                if (v instanceof SportCar) type = "SportCar     ";
+                else if (v instanceof Car) type = "Car          ";
+                else if (v instanceof Motorcycle) type = "Motorcycle   ";
+                else if (v instanceof Truck) type = "Truck        ";
+                else type = "Unknown     ";
+                
+                System.out.println("|     " + type + "|\t" + v.getLicensePlate() + "\t|\t" + v.getMake() + "\t|\t" + v.getModel() + "\t|\t" + v.getYear() + "\t|");
             }
         }
         System.out.println();
@@ -163,50 +170,59 @@ public class RentalSystem {
         try (BufferedReader reader = new BufferedReader(new FileReader("vehicles.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length < 6) continue; 
-                
-                String type = parts[0].trim();
+                // Example line: | ABC123 | Toyota | Camry | 2020 | AVAILABLE | | Seats: 5
+                String[] parts = line.split(" \\| ");
+                if (parts.length < 6) continue;
+
                 String licensePlate = parts[1].trim();
                 String make = parts[2].trim();
                 String model = parts[3].trim();
                 int year = Integer.parseInt(parts[4].trim());
                 Vehicle.VehicleStatus status = Vehicle.VehicleStatus.valueOf(parts[5].trim());
-                
-                if (type.equals("Car")) {
-                    int doors = Integer.parseInt(parts[6].trim());
-                    Car car = new Car(licensePlate, make, model, year);
-                    car.setStatus(status);
-                    vehicles.add(car);
-                } else if (type.equals("Motorcycle")) {
-                    String category = parts[6].trim();
-                    Motorcycle motorcycle = new Motorcycle(licensePlate, make, model, year);
-                    motorcycle.setStatus(status);
-                    vehicles.add(motorcycle);
+
+                Vehicle vehicle;
+                if (line.contains("Seats: ") && line.contains("Horsepower: ")) {
+                    // SportCar
+                    int seats = Integer.parseInt(parts[6].split(": ")[1]);
+                    int horsepower = Integer.parseInt(parts[7].split(": ")[1]);
+                    boolean turbo = parts[8].split(": ")[1].equals("Yes");
+                    vehicle = new SportCar(make, model, year, seats, horsepower, turbo);
+                } else if (line.contains("Seats: ")) {
+                    // Car
+                    int seats = Integer.parseInt(parts[6].split(": ")[1]);
+                    vehicle = new Car(make, model, year, seats);
+                } else if (line.contains("Sidecar: ")) {
+                    // Motorcycle
+                    boolean sidecar = parts[6].split(": ")[1].equals("Yes");
+                    vehicle = new Motorcycle(make, model, year, sidecar);
+                } else if (line.contains("Cargo Capacity: ")) {
+                    // Truck
+                    double capacity = Double.parseDouble(parts[6].split(": ")[1]);
+                    vehicle = new Truck(make, model, year, capacity);
+                } else {
+                    continue;
                 }
+
+                vehicle.setLicensePlate(licensePlate);
+                vehicle.setStatus(status);
+                vehicles.add(vehicle);
             }
         } catch (IOException e) {
-            System.out.println("Error");
-    }
+            System.out.println("Error loading vehicles: " + e.getMessage());
+        }
 }
     private void loadCustomer() {
-        try (BufferedReader reader = new BufferedReader(new FileReader("customers.txt"))) {
+    	try (BufferedReader reader = new BufferedReader(new FileReader("customers.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length < 3) continue; 
-                
-                int customerId = Integer.parseInt(parts[0].trim());
-                String customerName = parts[1].trim();
-                String phoneNumber = parts[2].trim();
-                
-                Customer customer = new Customer(customerId, customerName, phoneNumber);
-                customers.add(customer);
+                // Example line: Customer ID: 123 | Name: John
+                String[] parts = line.split(" \\| ");
+                int id = Integer.parseInt(parts[0].split(": ")[1].trim());
+                String name = parts[1].split(": ")[1].trim();
+                customers.add(new Customer(id, name));
             }
         } catch (IOException e) {
-            System.out.println("No existing customer data found or error reading file.");
-        } catch (Exception e) {
-            System.out.println("Error parsing customer data: " + e.getMessage());
+            System.out.println("Error loading customers: " + e.getMessage());
         }
     }
 
@@ -240,8 +256,6 @@ public class RentalSystem {
             }
         } catch (IOException e) {
             System.out.println("No existing rental records found or error reading file.");
-        } catch (Exception e) {
-            System.out.println("Error parsing rental records: " + e.getMessage());
-        }
-    }
+        	}
+    	}
     }

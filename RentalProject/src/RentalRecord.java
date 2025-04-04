@@ -32,12 +32,17 @@ public class RentalRecord {
     }
     
     public static RentalRecord parse(String row) {
-    	String[] parts = row.split(",");
-        Vehicle vehicleId = parts[0];
-        Customer customerId = parts[1];
-        LocalDate date = LocalDate.parse(parts[2]);
-        double amount = Double.parseDouble(parts[3]);
-        String type = parts[4];
-        return new RentalRecord(vehicleId, customerId, date, amount, type);
+    	String[] parts = row.split(" \\| ");
+        String licensePlate = parts[1].split(": ")[1].trim();
+        String customerName = parts[2].split(": ")[1].trim();
+        LocalDate date = LocalDate.parse(parts[3].split(": ")[1].trim());
+        double amount = Double.parseDouble(parts[4].split("\\$")[1].trim());
+        String type = parts[0].trim();
+
+        // Find existing Vehicle and Customer
+        Vehicle vehicle = RentalSystem.getInstance().findVehicleByPlate(licensePlate);
+        Customer customer = RentalSystem.getInstance().findCustomerByName(customerName);
+
+        return new RentalRecord(vehicle, customer, date, amount, type);
     }
 }
