@@ -199,7 +199,7 @@ class VehicleRentalTest {
         
         rentalSystem.addCustomer(testCustomer);
         rentalSystem.rentVehicle(testCar, testCustomer, LocalDate.now(), 50.0);
-        
+        assertEquals(Vehicle.VehicleStatus.RENTED, testCar.getStatus(), "Vehicle should remain RENTED");
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
         
