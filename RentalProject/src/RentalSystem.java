@@ -215,7 +215,6 @@ public class RentalSystem {
     	try (BufferedReader reader = new BufferedReader(new FileReader("customers.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                // Example line: Customer ID: 123 | Name: John
                 String[] parts = line.split(" \\| ");
                 int id = Integer.parseInt(parts[0].split(": ")[1].trim());
                 String name = parts[1].split(": ")[1].trim();
