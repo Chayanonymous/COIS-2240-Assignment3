@@ -174,62 +174,65 @@ public class RentalSystem {
     	loadCustomer();
     	loadRecords();
     }
-    private void loadVehicles() throws NumberFormatException {
-        try (BufferedReader reader = new BufferedReader(new FileReader("vehicles.txt"))) {
+    private void loadVehicles() {
+    	try (BufferedReader reader = new BufferedReader(new FileReader("vehicles.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
-            	
-            	if(line.trim().isEmpty()) {
-            		continue;
-            	}
-                String[] parts = line.split(" \\| ");
-                if (parts.length < 6) continue;
-                
+                if (line.trim().isEmpty()) continue;
                 try {
-                String licensePlate = parts[1].trim();
-                String make = parts[2].trim();
-                String model = parts[3].trim();
-                int year = Integer.parseInt(parts[4].trim());
-                Vehicle.VehicleStatus status = Vehicle.VehicleStatus.valueOf(parts[5].trim());
-
-                Vehicle vehicle;
-                if (line.contains("Seats: ") && line.contains("Horsepower: ")) {
-                    // SportCar
-                    int seats = Integer.parseInt(parts[6].split(": ")[1]);
-                    int horsepower = Integer.parseInt(parts[7].split(": ")[1]);
-                    boolean turbo = parts[8].split(": ")[1].equals("Yes");
-                    vehicle = new SportCar(make, model, year, seats, horsepower, turbo);
-                } else if (line.contains("Seats: ")) {
-                    // Car
-                    int seats = Integer.parseInt(parts[6].split(": ")[1]);
-                    vehicle = new Car(make, model, year, seats);
-                } else if (line.contains("Sidecar: ")) {
-                    // Motorcycle
-                    boolean sidecar = parts[6].split(": ")[1].equals("Yes");
-                    vehicle = new Motorcycle(make, model, year, sidecar);
-                } else if (line.contains("Cargo Capacity: ")) {
-                    // Truck
-                    double capacity = Double.parseDouble(parts[6].split(": ")[1]);
-                    vehicle = new Truck(make, model, year, capacity);
-                } else {
-                    continue;
-                }
-
-                vehicle.setLicensePlate(licensePlate);
-                vehicle.setStatus(status);
-                vehicles.add(vehicle);
-                }
-                catch
-                	(IllegalArgumentException e) {
-                        System.err.println("Failed to parse vehicle line: " + line);
-                        e.printStackTrace();
+                    String[] parts = line.split("\\|");
+                    List<String> tokens = new ArrayList<>();
+                    for (String part : parts) {
+                        if (!part.trim().isEmpty()) {
+                            tokens.add(part.trim());
+                        }
                     }
+
+                    if (tokens.size() < 6) {
+                        System.err.println("Skipping invalid vehicle line: " + line);
+                        continue;
+                    }
+
+                    String licensePlate = tokens.get(0);
+                    String make = tokens.get(1);
+                    String model = tokens.get(2);
+                    int year = Integer.parseInt(tokens.get(3));
+                    Vehicle.VehicleStatus status = Vehicle.VehicleStatus.valueOf(tokens.get(4));
+
+                    String typeDetails = tokens.get(5);
+                    Vehicle vehicle = null;
+
+                    if (typeDetails.startsWith("Seats:")) {
+                        int seats = Integer.parseInt(typeDetails.split(":")[1].trim());
+                        vehicle = new Car(make, model, year, seats);
+                    } else if (typeDetails.startsWith("Horsepower:")) {
+                        int horsepower = Integer.parseInt(typeDetails.split(":")[1].trim());
+                        boolean turbo = tokens.get(6).split(":")[1].trim().equalsIgnoreCase("Yes");
+                        vehicle = new SportCar(make, model, year, Integer.parseInt(tokens.get(5).split(":")[1].trim()), horsepower, turbo);
+                    } else if (typeDetails.startsWith("Sidecar:")) {
+                        boolean sidecar = typeDetails.split(":")[1].trim().equalsIgnoreCase("Yes");
+                        vehicle = new Motorcycle(make, model, year, sidecar);
+                    } else if (typeDetails.startsWith("Cargo Capacity:")) {
+                        double capacity = Double.parseDouble(typeDetails.split(":")[1].trim());
+                        vehicle = new Truck(make, model, year, capacity);
+                    }
+
+                    if (vehicle != null) {
+                        vehicle.setLicensePlate(licensePlate);
+                        vehicle.setStatus(status);
+                        vehicles.add(vehicle);
+                    }
+
+                } catch (Exception e) {
+                    System.err.println("Failed to parse vehicle line: " + line);
+                    e.printStackTrace();
                 }
-            
+            }
         } catch (IOException e) {
-            System.out.println("Error loading vehicles: " + e.getMessage());
+            System.out.println("Error");
         }
-}
+    }
+    
     private void loadCustomer() {
     	try (BufferedReader reader = new BufferedReader(new FileReader("customers.txt"))) {
             String line;
