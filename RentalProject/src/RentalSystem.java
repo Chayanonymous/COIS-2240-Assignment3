@@ -174,14 +174,18 @@ public class RentalSystem {
     	loadCustomer();
     	loadRecords();
     }
-    private void loadVehicles() {
+    private void loadVehicles() throws NumberFormatException {
         try (BufferedReader reader = new BufferedReader(new FileReader("vehicles.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                // Example line: | ABC123 | Toyota | Camry | 2020 | AVAILABLE | | Seats: 5
+            	
+            	if(line.trim().isEmpty()) {
+            		continue;
+            	}
                 String[] parts = line.split(" \\| ");
                 if (parts.length < 6) continue;
-
+                
+                try {
                 String licensePlate = parts[1].trim();
                 String make = parts[2].trim();
                 String model = parts[3].trim();
@@ -214,7 +218,14 @@ public class RentalSystem {
                 vehicle.setLicensePlate(licensePlate);
                 vehicle.setStatus(status);
                 vehicles.add(vehicle);
-            }
+                }
+                catch
+                	(IllegalArgumentException e) {
+                        System.err.println("Failed to parse vehicle line: " + line);
+                        e.printStackTrace();
+                    }
+                }
+            
         } catch (IOException e) {
             System.out.println("Error loading vehicles: " + e.getMessage());
         }
