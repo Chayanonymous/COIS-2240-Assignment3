@@ -223,10 +223,24 @@ public class RentalSystem {
     	try (BufferedReader reader = new BufferedReader(new FileReader("customers.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
+            	// for skipping empty rows/lines
+            	if (line.trim().isEmpty()) {
+            		continue;
+            	}
+            	
                 String[] parts = line.split(" \\| ");
-                int id = Integer.parseInt(parts[0].split(": ")[1].trim());
-                String name = parts[1].split(": ")[1].trim();
-                customers.add(new Customer(id, name));
+                
+                if (parts.length < 2) {
+                	continue;
+                }
+                try {
+                	int id = Integer.parseInt(parts[0].split(": ")[1].trim());
+                    String name = parts[1].split(": ")[1].trim();
+                    customers.add(new Customer(id, name));
+                } catch (Exception e) {
+                    System.err.println("Failed to parse customer line: " + line);
+                    e.printStackTrace();
+                }
             }
         } catch (IOException e) {
             System.out.println("Error loading customers: " + e.getMessage());

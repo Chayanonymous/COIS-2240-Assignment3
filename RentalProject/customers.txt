@@ -1,0 +1,4 @@
+
+Customer ID: 1 | Name: George
+Customer ID: 2 | Name: Anne
+Customer ID: 3 | Name: mistake
