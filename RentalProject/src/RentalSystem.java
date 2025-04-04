@@ -14,10 +14,14 @@ public class RentalSystem {
     public static RentalSystem instance;
     
     
-    public void addVehicle(Vehicle vehicle) {
+    public boolean addVehicle(Vehicle vehicle) {
+        if (findVehicleByPlate(vehicle.getLicensePlate()) != null) {
+            System.out.println("Vehicle with license plate " + vehicle.getLicensePlate() + " already exists.");
+            return false;
+        }
         vehicles.add(vehicle);
         saveVehicle(vehicle);
-        
+        return true;
     }
     
     private RentalSystem() {
@@ -36,10 +40,14 @@ public class RentalSystem {
     	return instance;
     }
 
-    public void addCustomer(Customer customer) {
+    public boolean addCustomer(Customer customer) {
+        if (findCustomerById(customer.getCustomerId()) != null) {
+            System.out.println("Customer ID " + customer.getCustomerId() + " already exists.");
+            return false;
+        }
         customers.add(customer);
         saveCustomer(customer);
-        
+        return true;
     }
 
  
