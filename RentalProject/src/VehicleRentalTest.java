@@ -7,7 +7,7 @@ import java.io.*;
 import java.time.LocalDate;
 import java.util.List;
 
-class VehicleLicensePlateValidationTest {
+class VehicleRentalTest {
 	@Test
     public void testLicensePlateValidation() {
         
