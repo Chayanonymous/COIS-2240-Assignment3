@@ -175,18 +175,18 @@ class VehicleRentalTest {
     void testLoadData() {
         try {
             BufferedWriter vehicleWriter = new BufferedWriter(new FileWriter("vehicles.txt"));
-            vehicleWriter.write("Car | ABC123 | Toyota | Corolla | 2020 | AVAILABLE | Seats: 5\n");
+            vehicleWriter.write("ABC123 | Toyota | Corolla | 2020 | AVAILABLE | Seats: 5\n"); // Removed "Car | "
             vehicleWriter.close();
-            
+
             BufferedWriter customerWriter = new BufferedWriter(new FileWriter("customers.txt"));
             customerWriter.write("ID: 1001 | Name: John Doe\n");
             customerWriter.close();
         } catch (IOException e) {
             fail("Failed to setup test files");
         }
-        
+
         RentalSystem newInstance = RentalSystem.getInstance();
-        
+
         assertNotNull(newInstance.findVehicleByPlate("ABC123"), "Should load vehicle from file");
         assertNotNull(newInstance.findCustomerById(1001), "Should load customer from file");
     }

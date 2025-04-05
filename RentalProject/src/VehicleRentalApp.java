@@ -42,7 +42,7 @@ public class VehicleRentalApp {
 		                System.out.print("Enter the cargo capacity: ");
 		                double cargoCapacity = scanner.nextDouble();
 		                vehicle = new Truck(make, model, year, cargoCapacity);
-		                System.out.print("Motorcycle added successfuly.");
+		                System.out.print("Truck added successfuly.");
 		            } else {
 		            	vehicle = null;
 		            }

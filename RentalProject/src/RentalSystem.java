@@ -175,7 +175,7 @@ public class RentalSystem {
     	loadRecords();
     }
     private void loadVehicles() {
-    	try (BufferedReader reader = new BufferedReader(new FileReader("vehicles.txt"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("vehicles.txt"))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.trim().isEmpty()) continue;
@@ -198,17 +198,20 @@ public class RentalSystem {
                     String model = tokens.get(2);
                     int year = Integer.parseInt(tokens.get(3));
                     Vehicle.VehicleStatus status = Vehicle.VehicleStatus.valueOf(tokens.get(4));
-
                     String typeDetails = tokens.get(5);
+
                     Vehicle vehicle = null;
 
                     if (typeDetails.startsWith("Seats:")) {
                         int seats = Integer.parseInt(typeDetails.split(":")[1].trim());
-                        vehicle = new Car(make, model, year, seats);
-                    } else if (typeDetails.startsWith("Horsepower:")) {
-                        int horsepower = Integer.parseInt(typeDetails.split(":")[1].trim());
-                        boolean turbo = tokens.get(6).split(":")[1].trim().equalsIgnoreCase("Yes");
-                        vehicle = new SportCar(make, model, year, Integer.parseInt(tokens.get(5).split(":")[1].trim()), horsepower, turbo);
+                        if (tokens.size() > 6 && tokens.get(6).startsWith("Horsepower:")) {
+                            // This is a SportCar
+                            int horsepower = Integer.parseInt(tokens.get(6).split(":")[1].trim());
+                            boolean turbo = tokens.get(7).split(":")[1].trim().equalsIgnoreCase("Yes");
+                            vehicle = new SportCar(make, model, year, seats, horsepower, turbo);
+                        } else {
+                            vehicle = new Car(make, model, year, seats);
+                        }
                     } else if (typeDetails.startsWith("Sidecar:")) {
                         boolean sidecar = typeDetails.split(":")[1].trim().equalsIgnoreCase("Yes");
                         vehicle = new Motorcycle(make, model, year, sidecar);
